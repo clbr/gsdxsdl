@@ -7,10 +7,11 @@ CXXFLAGS += -fno-operator-names -mfpmath=sse -fno-strict-aliasing -Wno-unknown-p
 		-I . -fPIC
 CXXFLAGS += $(shell pkg-config --cflags gtk+-2.0)
 
+LDFLAGS += -Wl,-as-needed
 LDFLAGS += -L /usr/X11R7/lib -lGL -lpng
 LDFLAGS += $(shell pkg-config --libs gtk+-2.0)
 
-all: $(name)
+all: $(name) app
 
 src = GLLoader.cpp \
 	GLState.cpp \
@@ -88,6 +89,9 @@ obj = $(src:.cpp=.o)
 
 $(name): $(obj)
 	$(CXX) -o $(name) -shared $(obj) $(CXXFLAGS) $(LDFLAGS)
+
+app: $(name) app.cpp
+	$(CXX) -o app $(CXXFLAGS) $(name) app.cpp -Wl,-rpath,'$$ORIGIN'
 
 clean:
 	rm -f $(name) *.o

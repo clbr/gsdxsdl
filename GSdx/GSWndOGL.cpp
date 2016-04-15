@@ -173,6 +173,10 @@ bool GSWndOGL::Create(const string& title, int w, int h)
 		w = theApp.GetConfig("ModeWidth", 640);
 		h = theApp.GetConfig("ModeHeight", 480);
 	}
+	if(w <= 0 || h <= 0) {
+		w = 640;
+		h = 480;
+	}
 
 	m_managed = true;
 
