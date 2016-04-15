@@ -87,13 +87,20 @@ void GSWndOGL::CreateContext(int major, int minor)
 	};
 
 	m_context = glX_CreateContextAttribsARB(m_NativeDisplay, fbc[0], 0, true, context_attribs);
-	XFree(fbc);
 
 	// Don't forget to reinstall the older Handler
 	XSetErrorHandler(oldHandler);
 
 	// Get latest error
 	XSync( m_NativeDisplay, false);
+
+	if (ctxError) {
+		printf("No 3.3 GL, falling back to 2.1\n");
+		ctxError = 0;
+		m_context = glXCreateNewContext(m_NativeDisplay, fbc[0], GLX_RGBA_TYPE, 0, True);
+	}
+
+	XFree(fbc);
 
 	if (!m_context || ctxError) {
 		fprintf(stderr, "Failed to create the opengl context. Check your drivers support openGL %d.%d. Hint: opensource drivers don't\n", major, minor );

@@ -412,8 +412,8 @@ namespace GLLoader {
 		glGetIntegerv(GL_MAJOR_VERSION, &major_gl);
 		glGetIntegerv(GL_MINOR_VERSION, &minor_gl);
 		if ( (major_gl < major) || ( major_gl == major && minor_gl < minor ) ) {
-			fprintf(stderr, "OpenGL %d.%d is not supported. Only OpenGL %d.%d\n was found", major, minor, major_gl, minor_gl);
-			return false;
+			fprintf(stderr, "OpenGL %d.%d is not supported. Only OpenGL %d.%d was found\n", major, minor, major_gl, minor_gl);
+//			return false;
 		}
 
         return true;
