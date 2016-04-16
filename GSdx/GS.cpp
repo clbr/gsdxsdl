@@ -492,7 +492,7 @@ static int _GSopen(void** dsp, const char* title, GSRendererType renderer, int t
 	return 0;
 }
 
-EXPORT_C_(int) GSopen2(void** dsp, uint32 flags)
+int GSopen2(void** dsp, uint32 flags)
 {
 	static bool stored_toggle_state = false;
 	bool toggle_state = !!(flags & 4);
