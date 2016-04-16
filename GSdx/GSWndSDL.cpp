@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "GSWndSDL.h"
 
-GSWndSDL::GSWndSDL() {
+static Display *disp;
 
+GSWndSDL::GSWndSDL() {
+	disp = XOpenDisplay(NULL);
 }
 
 GSWndSDL::~GSWndSDL() {
@@ -22,7 +24,7 @@ void GSWndSDL::Detach() {
 }
 
 void *GSWndSDL::GetDisplay() {
-	return NULL;
+	return disp;
 }
 
 void *GSWndSDL::GetHandle() {
