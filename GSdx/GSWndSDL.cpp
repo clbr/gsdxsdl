@@ -2,9 +2,11 @@
 #include "GSWndSDL.h"
 
 static Display *disp;
+static char oldtitle[PATH_MAX];
 
 GSWndSDL::GSWndSDL() {
 	disp = XOpenDisplay(NULL);
+	m_managed = true;
 }
 
 GSWndSDL::~GSWndSDL() {
@@ -36,7 +38,10 @@ GSVector4i GSWndSDL::GetClientRect() {
 }
 
 bool GSWndSDL::SetWindowText(const char *title) {
-	SDL_WM_SetCaption(title, NULL);
+	if (strcmp(oldtitle, title)) {
+		strcpy(oldtitle, title);
+		SDL_WM_SetCaption(title, NULL);
+	}
 }
 
 void GSWndSDL::AttachContext() {
