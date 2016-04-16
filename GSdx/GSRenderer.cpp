@@ -359,7 +359,7 @@ void GSRenderer::VSync(int field)
 
 		m_perfmon.Update();
 
-		double fps = (frames / ms) / 1000.0f;
+		double fps = (frames / (float) ms) / 1000.0f;
 
 		GSVector4i r = GetDisplayRect();
 
