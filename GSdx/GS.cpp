@@ -26,6 +26,7 @@
 #include "GSRendererNull.h"
 #include "GSDeviceNull.h"
 #include "GSDeviceOGL.h"
+#include "GSDeviceSDL.h"
 #include "GSRendererOGL.h"
 #include "GSRendererCL.h"
 
@@ -46,6 +47,7 @@ static HRESULT s_hr = E_FAIL;
 
 #include "GSWndOGL.h"
 #include "GSWndEGL.h"
+#include "GSWndSDL.h"
 
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
@@ -146,6 +148,8 @@ EXPORT_C GSshutdown()
 	s_gs = NULL;
 
 	s_renderer = GSRendererType::Undefined;
+
+	SDL_Quit();
 
 #ifdef _WINDOWS
 
@@ -267,9 +271,10 @@ static int _GSopen(void** dsp, const char* title, GSRendererType renderer, int t
 		case GSRendererType::OGL_HW:
 		case GSRendererType::OGL_SW:
 		case GSRendererType::OGL_OpenCL:
-			dev = new GSDeviceOGL();
-			s_renderer_name = " OGL";
-			renderer_fullname = "OpenGL";
+//			dev = new GSDeviceOGL();
+			dev = new GSDeviceSDL();
+			s_renderer_name = " SDL";
+			renderer_fullname = "SDL";
 			break;
 		}
 
@@ -349,7 +354,7 @@ static int _GSopen(void** dsp, const char* title, GSRendererType renderer, int t
 			wnd[0] = new GSWndEGL();
 			wnd[1] = new GSWndOGL();
 #else
-			wnd[0] = new GSWndOGL();
+			wnd[0] = new GSWndSDL();
 #endif
 #endif
 		}

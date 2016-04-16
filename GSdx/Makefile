@@ -84,7 +84,8 @@ src = GLLoader.cpp \
 	GSWndEGL.cpp \
 	GSdx.cpp \
 	stdafx.cpp \
-	GSDeviceSDL.cpp
+	GSDeviceSDL.cpp \
+	GSWndSDL.cpp
 
 obj = $(src:.cpp=.o)
 
