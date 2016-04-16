@@ -91,7 +91,7 @@ $(name): $(obj)
 	$(CXX) -o $(name) -shared $(obj) $(CXXFLAGS) $(LDFLAGS)
 
 app: $(name) app.cpp
-	$(CXX) -o app $(CXXFLAGS) $(name) app.cpp -Wl,-rpath,'$$ORIGIN'
+	$(CXX) -o app $(CXXFLAGS) app.cpp $(name) -Wl,-rpath,'$$ORIGIN'
 
 clean:
 	rm -f $(name) *.o
