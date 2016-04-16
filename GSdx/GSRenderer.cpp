@@ -24,10 +24,14 @@
 #ifdef __linux__
 #include <X11/keysym.h>
 #endif
+#include <sys/time.h>
 
 const unsigned int s_interlace_nb = 8;
 const unsigned int s_post_shader_nb = 5;
 const unsigned int s_aspect_ratio_nb = 3;
+
+static struct timeval started;
+static uint32_t frames;
 
 GSRenderer::GSRenderer()
 	: m_shader(0)
@@ -39,6 +43,8 @@ GSRenderer::GSRenderer()
 	, m_dev(NULL)
 {
 	m_GStitleInfoBuffer[0] = 0;
+
+	gettimeofday(&started, NULL);
 
 	m_interlace = theApp.GetConfig("interlace", 7) % s_interlace_nb;
 	m_aspectratio = theApp.GetConfig("aspectratio", 1) % s_aspect_ratio_nb;
@@ -323,6 +329,7 @@ void GSRenderer::VSync(int field)
 	GSPerfMonAutoTimer pmat(&m_perfmon);
 
 	m_perfmon.Put(GSPerfMon::Frame);
+	frames++;
 
 	Flush();
 
@@ -342,11 +349,17 @@ void GSRenderer::VSync(int field)
 
 	// osd
 
-	if((m_perfmon.GetFrame() & 0x1f) == 0)
+	if(frames % 64 == 0)
 	{
+		struct timeval now, res;
+		gettimeofday(&now, NULL);
+		timersub(&now, &started, &res);
+
+		uint32_t ms = res.tv_sec * 1000 + res.tv_usec / 1000;
+
 		m_perfmon.Update();
 
-		double fps = 1000.0f / m_perfmon.Get(GSPerfMon::Frame);
+		double fps = (frames / ms) / 1000.0f;
 
 		GSVector4i r = GetDisplayRect();
 
@@ -363,8 +376,8 @@ void GSRenderer::VSync(int field)
 			string s2 = m_regs->SMODE2.INT ? (string("Interlaced ") + (m_regs->SMODE2.FFMD ? "(frame)" : "(field)")) : "Progressive";
 
 			s = format(
-				"%lld | %d x %d | %.2f fps (%d%%) | %s - %s | %s | %d S/%d P/%d D | %d%% CPU | %.2f | %.2f",
-				m_perfmon.GetFrame(), r.width(), r.height(), fps, (int)(100.0 * fps / GetTvRefreshRate()),
+				"%d x %d | %.2f fps | %s - %s | %s | %d S/%d P/%d D | %d%% CPU | %.2f | %.2f",
+				r.width(), r.height(), fps,
 				s2.c_str(),
 				theApp.m_gs_interlace[m_interlace].name.c_str(),
 				theApp.m_gs_aspectratio[m_aspectratio].name.c_str(),
