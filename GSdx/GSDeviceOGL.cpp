@@ -110,8 +110,8 @@ GSDeviceOGL::~GSDeviceOGL()
 	delete m_convert.cb;
 
 	// Clean m_fxaa
-	delete m_fxaa.cb;
-	m_shader->Delete(m_fxaa.ps);
+//	delete m_fxaa.cb;
+//	m_shader->Delete(m_fxaa.ps);
 
 	// Clean m_shaderfx
 	delete m_shaderfx.cb;
@@ -121,8 +121,8 @@ GSDeviceOGL::~GSDeviceOGL()
 	delete m_date.dss;
 
 	// Clean shadeboost
-	delete m_shadeboost.cb;
-	m_shader->Delete(m_shadeboost.ps);
+//	delete m_shadeboost.cb;
+//	m_shader->Delete(m_shadeboost.ps);
 
 
 	// Clean various opengl allocation
@@ -323,7 +323,7 @@ bool GSDeviceOGL::Create(GSWnd* wnd)
 	// ****************************************************************
 	// Shade boost
 	// ****************************************************************
-	GL_PUSH("GSDeviceOGL::Shadeboost");
+/*	GL_PUSH("GSDeviceOGL::Shadeboost");
 
 	m_shadeboost.cb = new GSUniformBufferOGL(g_shadeboost_cb_index, sizeof(ShadeBoostConstantBuffer));
 
@@ -337,7 +337,7 @@ bool GSDeviceOGL::Create(GSWnd* wnd)
 	m_shadeboost.ps = m_shader->Compile("shadeboost.glsl", "ps_main", GL_FRAGMENT_SHADER, shadeboost_glsl, shade_macro);
 
 	GL_POP();
-
+*/
 	// ****************************************************************
 	// rasterization configuration
 	// ****************************************************************
@@ -1161,6 +1161,7 @@ void GSDeviceOGL::DoInterlace(GSTexture* sTex, GSTexture* dTex, int shader, bool
 
 void GSDeviceOGL::DoFXAA(GSTexture* sTex, GSTexture* dTex)
 {
+	return;
 	// Lazy compile
 	if (!m_fxaa.ps) {
 		if (!GLLoader::found_GL_ARB_gpu_shader5) { // GL4.0 extension
@@ -1240,6 +1241,7 @@ void GSDeviceOGL::DoExternalFX(GSTexture* sTex, GSTexture* dTex)
 
 void GSDeviceOGL::DoShadeBoost(GSTexture* sTex, GSTexture* dTex)
 {
+	return;
 	GL_PUSH("DoShadeBoost");
 
 	OMSetColorMaskState();
