@@ -84,7 +84,7 @@ void GSShaderOGL::GS(GLuint s)
 
 bool GSShaderOGL::ValidateShader(GLuint s)
 {
-	if (!m_debug_shader) return true;
+//	if (!m_debug_shader) return true;
 
 	GLint status = 0;
 	glGetShaderiv(s, GL_COMPILE_STATUS, &status);
