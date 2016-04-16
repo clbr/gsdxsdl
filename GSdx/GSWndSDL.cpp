@@ -30,7 +30,7 @@ void *GSWndSDL::GetHandle() {
 }
 
 GSVector4i GSWndSDL::GetClientRect() {
-	return GSVector4i();
+	return GSVector4i(0, 0, 1920, 1080);
 }
 
 bool GSWndSDL::SetWindowText(const char *title) {
