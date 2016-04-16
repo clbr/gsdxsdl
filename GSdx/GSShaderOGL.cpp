@@ -197,7 +197,7 @@ void GSShaderOGL::UseProgram()
 std::string GSShaderOGL::GenGlslHeader(const std::string& entry, GLenum type, const std::string& macro)
 {
 	std::string header;
-	header = "#version 330 core\n";
+	header = "#version 130\n";
 	// Need GL version 420
 	header += "#extension GL_ARB_shading_language_420pack: require\n";
 	if (GLLoader::found_GL_ARB_separate_shader_objects) {
