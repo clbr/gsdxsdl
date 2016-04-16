@@ -5,11 +5,11 @@ name = libGSdx-1.0.0.so
 CXXFLAGS += -fno-operator-names -mfpmath=sse -fno-strict-aliasing -Wno-unknown-pragmas \
 		-Wno-parentheses -Wunused-variable -std=gnu++11 -fvisibility=hidden \
 		-I . -fPIC
-CXXFLAGS += $(shell pkg-config --cflags gtk+-2.0)
+CXXFLAGS += $(shell pkg-config --cflags gtk+-2.0 sdl)
 
 LDFLAGS += -Wl,-as-needed
 LDFLAGS += -L /usr/X11R7/lib -lGL -lpng
-LDFLAGS += $(shell pkg-config --libs gtk+-2.0)
+LDFLAGS += $(shell pkg-config --libs gtk+-2.0 sdl)
 
 all: $(name) app
 
@@ -83,7 +83,8 @@ src = GLLoader.cpp \
 	GSWndOGL.cpp \
 	GSWndEGL.cpp \
 	GSdx.cpp \
-	stdafx.cpp
+	stdafx.cpp \
+	GSDeviceSDL.cpp
 
 obj = $(src:.cpp=.o)
 
