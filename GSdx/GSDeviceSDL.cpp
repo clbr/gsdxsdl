@@ -41,7 +41,7 @@ GSDeviceSDL::~GSDeviceSDL()
 bool GSDeviceSDL::Create(GSWnd* wnd)
 {
 	if (m_window == NULL) {
-		m_window = SDL_SetVideoMode(640, 448, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+		m_window = SDL_SetVideoMode(640, 480, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
 	 	m_free_window = true;
 	}
 
@@ -101,6 +101,7 @@ void GSDeviceSDL::Present(GSTexture* st, GSTexture* dt, const GSVector4& dr, int
 	if(SDL_LockSurface(m_texture) == 0)
 	{
 		dm.bits = (uint8_t *) m_texture->pixels;
+		dm.pitch = m_texture->pitch;
 
 		if(st->Map(sm, NULL))
 		{
