@@ -359,7 +359,7 @@ void GSRenderer::VSync(int field)
 
 		m_perfmon.Update();
 
-		double fps = (frames / (float) ms) / 1000.0f;
+		double fps = (frames / (float) ms) * 1000.0f;
 
 		GSVector4i r = GetDisplayRect();
 
@@ -376,17 +376,11 @@ void GSRenderer::VSync(int field)
 			string s2 = m_regs->SMODE2.INT ? (string("Interlaced ") + (m_regs->SMODE2.FFMD ? "(frame)" : "(field)")) : "Progressive";
 
 			s = format(
-				"%d x %d | %.2f fps | %s - %s | %s | %d S/%d P/%d D | %d%% CPU | %.2f | %.2f",
+				"%d x %d | %.2f fps | %s - %s | %s",
 				r.width(), r.height(), fps,
 				s2.c_str(),
 				theApp.m_gs_interlace[m_interlace].name.c_str(),
-				theApp.m_gs_aspectratio[m_aspectratio].name.c_str(),
-				(int)m_perfmon.Get(GSPerfMon::SyncPoint),
-				(int)m_perfmon.Get(GSPerfMon::Prim),
-				(int)m_perfmon.Get(GSPerfMon::Draw),
-				m_perfmon.CPU(),
-				m_perfmon.Get(GSPerfMon::Swizzle) / 1024,
-				m_perfmon.Get(GSPerfMon::Unswizzle) / 1024
+				theApp.m_gs_aspectratio[m_aspectratio].name.c_str()
 			);
 
 			double fillrate = m_perfmon.Get(GSPerfMon::Fillrate);
