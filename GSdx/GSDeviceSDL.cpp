@@ -69,9 +69,9 @@ bool GSDeviceSDL::Reset(int w, int h)
 		if (m_window) {
 			SDL_SysWMinfo info;
 			SDL_VERSION(&info.version);
-			if (SDL_GetWMInfo(&info) == 1) {
-				printf("Window %lu\n", info.info.x11.window);
-			}
+//			if (SDL_GetWMInfo(&info) == 1) {
+//				printf("Window %lu\n", info.info.x11.window);
+//			}
 		}
 
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
