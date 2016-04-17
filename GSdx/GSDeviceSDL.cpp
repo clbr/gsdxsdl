@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "GSDeviceSDL.h"
 
-static GLuint texid;
+static GLuint texid, listid;
 
 GSDeviceSDL::GSDeviceSDL()
 	: m_free_window(false)
@@ -71,6 +71,31 @@ bool GSDeviceSDL::Create(GSWnd* wnd)
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 640, 480, 0, GL_RGBA,
 				GL_UNSIGNED_BYTE, NULL);
+
+		// Gen the display list
+		listid = glGenLists(1);
+		glNewList(listid, GL_COMPILE);
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glColor3ub(255, 255, 255);
+
+		glBegin(GL_QUADS);
+
+		glTexCoord2f(0, 0);
+		glVertex2f(-1, 1);
+
+		glTexCoord2f(0, 1);
+		glVertex2f(-1, -1);
+
+		glTexCoord2f(1, 1);
+		glVertex2f(1, -1);
+
+		glTexCoord2f(1, 0);
+		glVertex2f(1, 1);
+
+		glEnd();
+
+		glEndList();
 	}
 
 	return GSDeviceSW::Create(wnd);
@@ -206,24 +231,7 @@ void GSDeviceSDL::Present(GSTexture* st, GSTexture* dt, const GSVector4& dr, int
 	SDL_BlitSurface(m_texture, NULL, m_window, &r);
 */
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glColor3ub(255, 255, 255);
-
-	glBegin(GL_QUADS);
-
-	glTexCoord2f(0, 0);
-	glVertex2f(-1, 1);
-
-	glTexCoord2f(0, 1);
-	glVertex2f(-1, -1);
-
-	glTexCoord2f(1, 1);
-	glVertex2f(1, -1);
-
-	glTexCoord2f(1, 0);
-	glVertex2f(1, 1);
-
-	glEnd();
+	glCallList(listid);
 }
 
 void GSDeviceSDL::Flip()
