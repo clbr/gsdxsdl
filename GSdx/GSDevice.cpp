@@ -99,6 +99,11 @@ void GSDevice::Present(const GSVector4i& r, int shader)
 	int w = std::max<int>(cr.width(), 1);
 	int h = std::max<int>(cr.height(), 1);
 
+	if (m_current) {
+		w = m_current->GetSize().x;
+		h = m_current->GetSize().y;
+	}
+
 	if(!m_backbuffer || m_backbuffer->GetWidth() != w || m_backbuffer->GetHeight() != h)
 	{
 		if(!Reset(w, h))
