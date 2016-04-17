@@ -157,6 +157,7 @@ void GSDeviceSDL::Present(GSTexture* st, GSTexture* dt, const GSVector4& dr, int
 
 	if(m_texture == NULL)
 	{
+		Reset(size.x, size.y);
 		m_texture = SDL_CreateRGBSurface(SDL_SWSURFACE, size.x, size.y, 32,
 			0, 0, 0, 0);
 	}
