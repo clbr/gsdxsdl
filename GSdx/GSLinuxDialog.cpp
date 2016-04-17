@@ -61,7 +61,11 @@ void CB_ChangedComboBox(GtkComboBox *combo, gpointer user_data)
 
 GtkWidget* CreateComboBoxFromVector(const vector<GSSetting>& s, const char* opt_name, int opt_default = 0)
 {
+	#ifdef __x86_64__
 	GtkWidget* combo_box = gtk_combo_box_new();
+	#else
+	GtkWidget* combo_box = gtk_combo_box_text_new();
+	#endif
 	int opt_value        = theApp.GetConfig(opt_name, opt_default);
 	int opt_position     = 0;
 
@@ -70,8 +74,11 @@ GtkWidget* CreateComboBoxFromVector(const vector<GSSetting>& s, const char* opt_
 		string label = s[i].name;
 
 		if(!s[i].note.empty()) label += format(" (%s)", s[i].note.c_str());
-
+		#ifdef __x86_64__
 		gtk_combo_box_append_text(GTK_COMBO_BOX(combo_box), label.c_str());
+		#else
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo_box), label.c_str());
+		#endif
 
 		if ((int)s[i].id == opt_value)
 			opt_position = i;
