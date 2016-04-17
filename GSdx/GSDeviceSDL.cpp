@@ -66,7 +66,7 @@ bool GSDeviceSDL::Reset(int w, int h)
 
 	{
 		if (m_window) {
-			SDL_Quit();
+			SDL_QuitSubSystem(SDL_INIT_VIDEO);
 			SDL_Init(SDL_INIT_VIDEO);
 		}
 
