@@ -70,6 +70,17 @@ bool GSDeviceSDL::Reset(int w, int h)
 	m_backbuffer = new GSDummyTexture(w, h);
 
 	{
+		if (m_window) {
+			SDL_Quit();
+			SDL_Init(SDL_INIT_VIDEO);
+		}
+
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE, 0);
+		SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 0);
+		SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 0);
+		SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 0);
+
 		m_window = SDL_SetVideoMode(w * 2, h * 2, 32,
 						SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_OPENGL);
 
