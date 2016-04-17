@@ -34,7 +34,9 @@ void *GSWndSDL::GetHandle() {
 }
 
 GSVector4i GSWndSDL::GetClientRect() {
-	return GSVector4i(0, 0, 640, 480);
+	SDL_Surface *s = SDL_GetVideoSurface();
+
+	return GSVector4i(0, 0, s->w, s->h);
 }
 
 bool GSWndSDL::SetWindowText(const char *title) {

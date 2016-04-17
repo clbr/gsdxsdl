@@ -27,17 +27,12 @@ static GLuint texid, listid;
 GSDeviceSDL::GSDeviceSDL()
 	: m_free_window(false)
 	, m_window(NULL)
-	, m_texture(NULL)
 {
 	SDL_Init(SDL_INIT_VIDEO);
 }
 
 GSDeviceSDL::~GSDeviceSDL()
 {
-	if(m_texture != NULL)
-	{
-		SDL_FreeSurface(m_texture);
-	}
 }
 
 bool GSDeviceSDL::Create(GSWnd* wnd)
@@ -129,13 +124,6 @@ bool GSDeviceSDL::Reset(int w, int h)
 		glEndList();
 	}
 
-	if(m_texture != NULL)
-	{
-		SDL_FreeSurface(m_texture);
-
-		m_texture = NULL;
-	}
-
 	return true;
 }
 
@@ -143,113 +131,35 @@ void GSDeviceSDL::Present(GSTexture* st, GSTexture* dt, const GSVector4& dr, int
 {
 	ASSERT(dt == m_backbuffer); // ignore m_backbuffer
 
-	GSVector2i size = st->GetSize();
+	const GSVector2i size = st->GetSize();
 
-	if(m_texture != NULL)
+	if(m_backbuffer != NULL)
 	{
-		if(m_texture->w != size.x || m_texture->h != size.y)
+		if(m_backbuffer->GetSize().x != size.x ||
+			m_backbuffer->GetSize().y != size.y)
 		{
-			SDL_FreeSurface(m_texture);
-
-			m_texture = NULL;
+			delete m_backbuffer;
+			m_backbuffer = NULL;
 		}
 	}
 
-	if(m_texture == NULL)
-	{
-		Reset(size.x, size.y);
-		m_texture = SDL_CreateRGBSurface(SDL_SWSURFACE, size.x, size.y, 32,
-			0, 0, 0, 0);
+	if (!m_backbuffer) {
+		m_backbuffer = new GSDummyTexture(size.x, size.y);
 	}
 
-	if(m_texture == NULL)
+	GSTexture::GSMap sm;
+
+	if(st->Map(sm, NULL))
 	{
-		return;
+		const uint16_t w = size.x;
+		const uint16_t h = size.y;
+		// Direct tex upload, it's already in the correct format
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_RGBA,
+					GL_UNSIGNED_BYTE,
+					sm.bits);
+
+		st->Unmap();
 	}
-
-	GSTexture::GSMap sm, dm;
-
-	if(SDL_LockSurface(m_texture) == 0)
-	{
-		dm.bits = (uint8_t *) m_texture->pixels;
-		dm.pitch = m_texture->pitch;
-
-		if(st->Map(sm, NULL))
-		{
-			GSVector2i s = st->GetSize();
-
-			if(0) //m_format == SDL_PIXELFORMAT_ARGB8888)
-			{
-				if(((intptr_t)dm.bits & 15) == 0 && (dm.pitch & 15) == 0)
-				{
-					for(int j = s.y; j > 0; j--, sm.bits += sm.pitch, dm.bits += dm.pitch)
-					{
-						GSVector4i* RESTRICT src = (GSVector4i*)sm.bits;
-						GSVector4i* RESTRICT dst = (GSVector4i*)dm.bits;
-
-						for(int i = s.x >> 2; i > 0; i--, dst++, src++)
-						{
-							*dst = ((*src & 0x00ff0000) >> 16) | ((*src & 0x000000ff) << 16) | (*src & 0x0000ff00);
-						}
-
-						uint32* RESTRICT src2 = (uint32*)src;
-						uint32* RESTRICT dst2 = (uint32*)dst;
-
-						for(int i = s.x & 3; i > 0; i--, dst2++, src2++)
-						{
-							*dst2 = ((*src2 & 0x00ff0000) >> 16) | ((*src2 & 0x000000ff) << 16) | (*src2 & 0x0000ff00);
-						}
-					}
-				}
-				else
-				{
-					// VirtualBox/Ubuntu does not return an aligned pointer
-
-					for(int j = s.y; j > 0; j--, sm.bits += sm.pitch, dm.bits += dm.pitch)
-					{
-						uint32* RESTRICT src = (uint32*)sm.bits;
-						uint32* RESTRICT dst = (uint32*)dm.bits;
-
-						for(int i = s.x; i > 0; i--, dst++, src++)
-						{
-							*dst = ((*src & 0x00ff0000) >> 16) | ((*src & 0x000000ff) << 16) | (*src & 0x0000ff00);
-						}
-					}
-				}
-			}
-			else
-			{
-				const uint16_t w = m_texture->w;
-				const uint16_t h = m_texture->h;
-				// Direct tex upload, it's already in the correct format
-				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_RGBA,
-							GL_UNSIGNED_BYTE,
-							sm.bits);
-
-
-/*				for(int j = s.y; j > 0; j--, sm.bits += sm.pitch, dm.bits += dm.pitch)
-				{
-					memcpy(dm.bits, sm.bits, s.x * 4);
-				}*/
-			}
-
-			st->Unmap();
-		}
-
-		SDL_UnlockSurface(m_texture);
-	}
-/*
-	GSVector4i dri(dr);
-
-	SDL_Rect r;
-
-	r.x = dri.left;
-	r.y = dri.top;
-	r.w = dri.width();
-	r.h = dri.height();
-
-	SDL_BlitSurface(m_texture, NULL, m_window, &r);
-*/
 
 	glCallList(listid);
 }

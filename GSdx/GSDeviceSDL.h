@@ -28,7 +28,6 @@ class GSDeviceSDL : public GSDeviceSW
 {
 	bool m_free_window;
 	SDL_Surface* m_window;
-	SDL_Surface* m_texture;
 	int m_format;
 
 	class GSDummyTexture : public GSTexture
