@@ -49,9 +49,29 @@ bool GSDeviceSDL::Create(GSWnd* wnd)
 		SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 0);
 		SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 0);
 
+		m_free_window = true;
+
 		m_window = SDL_SetVideoMode(640 * 2, 480 * 2, 32,
 						SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_OPENGL);
-	 	m_free_window = true;
+	}
+
+	return GSDeviceSW::Create(wnd);
+}
+
+bool GSDeviceSDL::Reset(int w, int h)
+{
+	if(!GSDeviceSW::Reset(w, h))
+	{
+		return false;
+	}
+
+	delete m_backbuffer;
+
+	m_backbuffer = new GSDummyTexture(w, h);
+
+	{
+		m_window = SDL_SetVideoMode(w * 2, h * 2, 32,
+						SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_OPENGL);
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
@@ -69,7 +89,7 @@ bool GSDeviceSDL::Create(GSWnd* wnd)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 640, 480, 0, GL_RGBA,
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA,
 				GL_UNSIGNED_BYTE, NULL);
 
 		// Gen the display list
@@ -97,20 +117,6 @@ bool GSDeviceSDL::Create(GSWnd* wnd)
 
 		glEndList();
 	}
-
-	return GSDeviceSW::Create(wnd);
-}
-
-bool GSDeviceSDL::Reset(int w, int h)
-{
-	if(!GSDeviceSW::Reset(w, h))
-	{
-		return false;
-	}
-
-	delete m_backbuffer;
-
-	m_backbuffer = new GSDummyTexture(w, h);
 
 	if(m_texture != NULL)
 	{
@@ -201,8 +207,10 @@ void GSDeviceSDL::Present(GSTexture* st, GSTexture* dt, const GSVector4& dr, int
 			}
 			else
 			{
+				const uint16_t w = m_texture->w;
+				const uint16_t h = m_texture->h;
 				// Direct tex upload, it's already in the correct format
-				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 640, 480, GL_RGBA,
+				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_RGBA,
 							GL_UNSIGNED_BYTE,
 							sm.bits);
 
