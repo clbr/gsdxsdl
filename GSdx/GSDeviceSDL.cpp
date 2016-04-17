@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GSDeviceSDL.h"
+#include <SDL_syswm.h>
 
 static GLuint texid, listid;
 
@@ -66,8 +67,11 @@ bool GSDeviceSDL::Reset(int w, int h)
 
 	{
 		if (m_window) {
-			SDL_QuitSubSystem(SDL_INIT_VIDEO);
-			SDL_Init(SDL_INIT_VIDEO);
+			SDL_SysWMinfo info;
+			SDL_VERSION(&info.version);
+			if (SDL_GetWMInfo(&info) == 1) {
+				printf("Window %lu\n", info.info.x11.window);
+			}
 		}
 
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
