@@ -126,6 +126,8 @@ bool GSDeviceSDL::Reset(int w, int h)
 		glEnd();
 
 		glEndList();
+
+		glViewport(0, 0, w * 2, h * 2);
 	}
 
 	return true;
