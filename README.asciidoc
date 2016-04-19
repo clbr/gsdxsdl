@@ -1,0 +1,12 @@
+GSdx SDL/GL fork
+================
+
+It was rather annoying to find out PCSX2's only working graphics plugin
+required GL 3.3 even in software mode. Incidentally, I do not have GL 3.3.
+
+So, I resurrected the several years old SDL2 device, moved it to SDL1,
+and then to GL 1.3 for an accelerated scale+blit and vsync.
+
+This works in the software mode on pcsx2 1.4. Use at your own risk,
+I'm posting this mostly as an off-site backup, and I'm not interested
+in bug reports or patches.
